@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# These settings can be overridden in /etc/rudder-backup/backup.conf
+# Edit that file and not this script!
+# The package postinstall script creates the directories for the
+# default values. If you change any of the defaults, make sure
+# you set up sufficiently restrictive access rights.
+backup_dir=/var/backups/rudder-backup
+# How many days to keep backups. Used with find(1) to clean up old
+# backups. Does not take backup frequency into account, i.e.
+# if you want to keep 3 weekly backups, set this to 21. The included
+# /etc/cron.d/rudder-agent creates daily backups; edit this file to suit.
+backup_retention=3
+# Report the last succesful backup (in seconds since the epoch) to
+# this file. Used by the included nagios-style check script.
+last_success_marker_file=/var/lib/rudder-backup/last-success.txt
+# Backup the logs?
+backup_logs=no
+# The name of a postgres super user. Make sure pg_hba allows this user
+# to make backups of rudder (on Debian and Ubuntu, it usually already does).
+pg_user=postgres
+# End of overridable variables
+
+config_file=/etc/rudder-backup/backup.conf
+[ -e $config_file ] && . $config_file
+
+if [ ! -d $backup_dir ]; then
+	mkdir -p $backup_dir
+	chmod 700 $backup_dir
+fi
+
+retention_mmin=`expr $backup_retention \* 24 \* 60`
+find $backup_dir -mmin $retention_mmin -delete
+
+set -e
+
+# The following are taken from https://docs.rudder.io/reference/6.1/administration/procedures.html#_migration_backups_and_restores
+
+# Where you want to put the backups
+cd $backup_dir
+
+# First, backup the LDAP database:
+/opt/rudder/sbin/slapcat -l rudder-backup-$(date +%Y%m%d).ldif
+
+# Second, the PostgreSQL database:
+(cd / && sudo -u $pg_user pg_dump -Fc rudder) > rudder-backup-$(date +%Y%m%d).pgsql
+
+# Third, backup the configuration repository:
+tar -C /var/rudder -zcf rudder-backup-$(date +%Y%m%d).tar.gz configuration-repository/ cfengine-community/ppkeys/
+
+# These may not exist
+[ -d /var/rudder/packages ] && tar -C /var/rudder -zcf rudder-backup-packages-$(date +%Y%m%d).tar.gz packages/
+[ -d /var/rudder/plugin-resources ] && tar -C /var/rudder -zcf rudder-backup-plugin-resources-$(date +%Y%m%d).tar.gz plugin-resources/
+
+# Then backup Rudder configuration
+tar -C /opt/rudder -zcf rudder-etc-backup-$(date +%Y%m%d).tar.gz etc/
+
+# Finally, backup the logs (if you need them)
+tar -C /var/log -zcf rudder-log-backup-$(date +%Y%m%d).tar.gz rudder/
+
+# End of sample backup code.
+# If we get here, we encountered no errors. Record the timestamp to $last_success_marker_file.
+date +%s >$last_success_marker_file
+echo backup successful

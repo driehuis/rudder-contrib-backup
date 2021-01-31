@@ -1,0 +1,2 @@
+/etc/rudder-backup/backup.conf
+/etc/nagios/nrpe.d/check_rudder_backup.cfg

@@ -1,0 +1,9 @@
+Package: rudder-contrib-backup
+Version: 0.0-1
+Section: base
+Priority: optional
+Architecture: all
+Depends: tar
+Maintainer: Bert Driehuis <driehuis@playbeing.org>
+Description: Rudder backup scripts
+ Configurable backup scripts for rudder

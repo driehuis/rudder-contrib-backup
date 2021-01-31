@@ -1,0 +1,1 @@
+01 02 * * *	root /usr/sbin/rudder-contrib-backup 2>&1 | logger -p daemon.info -t rudder-contrib-backup

@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+# Fixup for RedHat/CentOS calling conventions
+arg=$1
+ostype=debian
+case $arg in    
+        1) arg=configure ; ostype=redhat ;;
+        2) arg=upgrade ; ostype=redhat ;;
+esac
+
+if [ "$arg" = "configure" ] || [ "$arg" = "upgrade" ]; then
+
+	if [ ! -d /var/lib/rudder-backup ]; then
+		mkdir /var/lib/rudder-backup
+		chmod 711 /var/lib/rudder-backup
+	fi
+	if [ ! -d /var/backups/rudder-backup ]; then
+		mkdir /var/backups/rudder-backup
+		chmod 700 /var/backups/rudder-backup
+	fi
+fi
+
+exit 0
+

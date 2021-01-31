@@ -1,0 +1,24 @@
+#!/bin/sh
+
+max_backup_age=90000 # 25 hours
+. /etc/rudder-backup/backup.conf
+
+if [ -z "$last_success_marker_file" ]; then
+	echo "UNKNOWN: /etc/rudder-backup/backup.conf doesn't define last_success_marker_file"
+	exit 4
+fi
+
+if [ -f "$last_success_marker_file" ]; then
+	read ts <$last_success_marker_file
+	min_ts=`expr $ts + $max_backup_age`
+	if [ "$min_ts" -lt "`date +%s`" ] ; then
+		echo "CRITICAL: last backup `date +'%F %T' --date=@$ts`"
+		exit 2
+	else
+		echo "OK: last backup `date +'%F %T' --date=@$ts`"
+		exit 0
+	fi
+else
+	echo "UNKNOWN: No successful backup yet"
+	exit 4
+fi

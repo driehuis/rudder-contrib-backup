@@ -29,7 +29,8 @@ if [ ! -d $backup_dir ]; then
 	chmod 700 $backup_dir
 fi
 
-retention_mmin=`expr $backup_retention \* 24 \* 60`
+# Convert retention to minutes; add one hour of slack.
+retention_mmin=`expr $backup_retention \* 24 \* 60 + 60`
 find $backup_dir -mmin $retention_mmin -delete
 
 set -e

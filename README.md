@@ -54,3 +54,9 @@ sudo rudder-contrib-backup
 This should produce no output other than "backup successful".
 
 Obviously, it is recommended to do a full restore test.
+
+## Building the package ##
+
+To build the package, install the build-essential and alien packages
+on a Debian or Ubuntu build server, and run `make.sh`. The result should be
+a .deb and a .rmp file. The author uses reprepro to distribute the .deb, YMMV.

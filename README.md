@@ -42,9 +42,10 @@ flavors of Debian and Ubuntu.
 ## Testing for compatability ##
 
 The scripts have been tested on Ubuntu bionic. The minimum OS requirement is a find(1) that
-supports `-mmin` and `-delete`. This should be no problem on any currently supported OS release.
+supports `-mmin` and `-delete`, and a fairly modern tar. This should be no problem on any
+currently supported OS release.
 Let me know if you require support for older versions of find and I'll try to find a solution.
-The author has not personally tested the support of Redhat flavors. To test, run the
+The author has not personally tested the Redhat flavors. To test, run the
 backup script as root:
 
 ````
@@ -59,5 +60,5 @@ Obviously, it is recommended to do a full restore test.
 
 To build the package, install the build-essential and alien packages
 on a Debian or Ubuntu build server, and run `make.sh` (under your own user,
-no sudo required). The result should be a .deb and a .rmp file. The author
+no sudo required). The result should be a .deb and a .rpm file. The author
 uses reprepro to distribute the .deb, YMMV.

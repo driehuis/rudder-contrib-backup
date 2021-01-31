@@ -5,7 +5,7 @@ Scripts to backup Rudder to a directory. Includes
 * Housekeeping
 * Nagios check
 
-## Configuration##
+## Configuration ##
 
 The backup script itself should not need modifications (if it does,
 please open up an issue).
@@ -21,7 +21,7 @@ directory protections; if you change the paths you must do this yourself.
   backups. Does not take backup frequency into account, i.e.
   if you want to keep 3 weekly backups, set this to 21. The included
   /etc/cron.d/rudder-agent creates daily backups; edit this file to suit.
-  Defaults to 3.
+  Defaults to 3 days.
 
 * `last_success_marker_file`: Where to record the last successful backup.
   Used by the included nagios-style check script.
@@ -42,7 +42,8 @@ flavors of Debian and Ubuntu.
 ## Testing for compatability ##
 
 The scripts have been tested on Ubuntu bionic. The minimum OS requirement is a find(1) that
-supports -mmin and -delete. This should be no problem on any currently supported OS release.
+supports `-mmin` and `-delete`. This should be no problem on any currently supported OS release.
+Let me know if you require support for older versions of find and I'll try to find a solution.
 The author has not personally tested the support of Redhat flavors. To test, run the
 backup script as root:
 

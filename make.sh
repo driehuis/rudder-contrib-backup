@@ -21,7 +21,7 @@ cd $name
 
 cd ..
 
-mkdir .tmp && cd .tmp
+mkdir .tmp && cd .tmp || die ".tmp already exists, investigate why the previous run of $0 failed!"
 cp -pr ../${name} .
 (find ${name} -name .svn -o -name '.git*' -print0|xargs -0 rm -rf)
 size=`du -ks $name|awk '{print $1}'`

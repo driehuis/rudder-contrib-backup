@@ -57,7 +57,8 @@ tar -C /var/rudder -zcf rudder-backup-$(date +%Y%m%d).tar.gz configuration-repos
 tar -C /opt/rudder -zcf rudder-etc-backup-$(date +%Y%m%d).tar.gz etc/
 
 # Finally, backup the logs (if you need them)
-tar -C /var/log -zcf rudder-log-backup-$(date +%Y%m%d).tar.gz rudder/
+# We ignore errors from tar. Use filesystem monitoring to catch disk full errors.
+tar -C /var/log -zcf rudder-log-backup-$(date +%Y%m%d).tar.gz rudder/ || true
 
 # End of sample backup code.
 # If we get here, we encountered no errors. Record the timestamp to $last_success_marker_file.
